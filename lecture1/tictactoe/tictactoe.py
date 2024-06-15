@@ -27,8 +27,7 @@ def player(board):
         return X
     x_count = sum(row.count(X) for row in board)
     o_count = sum(row.count(O) for row in board)
-    print("x num = " + str(x_count ))
-    print("o num = " + str(o_count ))
+    
 
     if x_count>o_count:
         return O
@@ -107,7 +106,13 @@ def terminal(board):
             """
             if all(board[i][2 - i] == player for i in range(3)):
                 return True
-    return False
+    #if no player has won
+    
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == None:
+                return False
+    return True
 
 
 def utility(board):
@@ -154,7 +159,9 @@ def minimax(board):
             scores.append(score)
             if score == 1:
                 return action
+        
         max_score = max(scores)
+        print(scores,max_score)
         for score_num in range(0, len(scores)):
             if scores[score_num] == max_score:
                 return all_actions[score_num]
@@ -167,6 +174,7 @@ def minimax(board):
             if score == -1:
                 return action
         min_score = min(scores)
+        print(scores,min_score)
         for score_num in range(0, len(scores)):
             if scores[score_num] == min_score:
                 return all_actions[score_num]
