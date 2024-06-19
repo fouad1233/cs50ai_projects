@@ -1,5 +1,5 @@
 import csv
-import sys
+import sys , os
 
 from util import Node, StackFrontier, QueueFrontier
 
@@ -55,12 +55,18 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    file_path = os.path.dirname(os.path.abspath(__file__))
+
+    directory = os.path.join( file_path, (sys.argv[1] if len(sys.argv) == 2 else "large"))
+    print(directory)
 
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
     print("Data loaded.")
+    print("people: ", people)
+    print("movies: ", movies)
+    print("names: ", names)
 
     source = person_id_for_name(input("Name: "))
     if source is None:

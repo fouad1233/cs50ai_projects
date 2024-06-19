@@ -50,3 +50,24 @@ Complete the implementations of `player`, `actions`, `result`, `winner`, `termin
 For all functions that accept a `board` as input, you may assume that it is a valid board (namely, that it is a list that contains three rows, each with three values of either `X`, `O`, or `EMPTY`). You should not modify the function declarations (the order or number of arguments to each function) provided.
 
 Once all functions are implemented correctly, you should be able to run `python runner.py` and play against your AI. And, since Tic-Tac-Toe is a tie given optimal play by both sides, you should never be able to beat the AI (though if you don’t play optimally as well, it may beat you!)
+
+
+#### Degrees
+
+**Problem Definition:**
+
+* The task is to find the shortest path between any two actors.
+* This path is determined by selecting a sequence of movies that connect the two actors.
+
+**Example:**
+
+* The shortest path between Jennifer Lawrence and Tom Hanks is 2 steps:
+  * Jennifer Lawrence is connected to Kevin Bacon by both starring in “X-Men: First Class.”
+  * Kevin Bacon is connected to Tom Hanks by both starring in “Apollo 13.”
+
+**Modeling as a Search Problem:**
+
+* **States:** The states are the actors.
+* **Actions:** The actions are movies, which allow us to move from one actor to another (it is true that a movie could lead to multiple actors, but this is acceptable for this problem).
+* **Initial State and Goal State:** The initial state and goal state are defined by the two actors we are trying to connect.
+* **Method:** By using breadth-first search, we can find the shortest path from one actor to another.
