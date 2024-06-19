@@ -40,11 +40,11 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    possible_actions = []
+    possible_actions = set()
     for i in range(0,3):
         for j in range(0,3):
             if board[i][j] == None:
-                possible_actions.append( (i,j) )
+                possible_actions.add( (i,j) )
     
     return possible_actions
 
@@ -53,11 +53,12 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    if(action[0] or action[1]) not in range(0,3):
+        raise Exception("Invalid Move : out-of-bounds move")
     game_player = player(board)
     new_board = deepcopy(board)
     if new_board[action[0]][action[1]] != EMPTY:
-        #raise Exception("Invalid Move")
-        pass
+        raise Exception("Invalid Move")
     else:
         new_board[action[0]][action[1]] = game_player
     return new_board    
@@ -150,9 +151,11 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
+    if terminal(board):
+        return None
     game_player = player(board)
     if game_player == X:
-        all_actions = actions(board)
+        all_actions = list(actions(board))
         scores = []
         for action in all_actions:
             score = min_value(result(board, action))
@@ -166,7 +169,7 @@ def minimax(board):
             if scores[score_num] == max_score:
                 return all_actions[score_num]
     elif game_player == O:
-        all_actions = actions(board)
+        all_actions = list(actions(board))
         scores = []
         for action in all_actions:
             score = max_value(result(board, action))
