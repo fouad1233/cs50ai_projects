@@ -100,8 +100,7 @@ def shortest_path(source, target):
     deggrees_of_seperation = DegreesOfSeperation(source, target)
     deggrees_of_seperation.solve()
     return deggrees_of_seperation.solution
-    # TODO
-    #raise NotImplementedError
+    
 
 class DegreesOfSeperation():
     def __init__(self, sourceid , targetid ):
@@ -133,15 +132,23 @@ class DegreesOfSeperation():
             # If node is the goal, then we have a solution
             if node.state == self.goal:
                 previous_nodes = []
-                #actions = []
-                #cells = []
                 while node.parent is not None:
-                    #actions.append(node.action)
-                    #cells.append(node.state)
                     previous_nodes.append(node)
                     node = node.parent
-                #actions.reverse()
-                #cells.reverse()
+                previous_nodes.reverse()
+                movies_and_persons = []
+                for node in previous_nodes:
+                    movies_and_persons.append((node.action, node.state))
+                self.solution = movies_and_persons
+                return
+            #if the goal is in the frontier
+            is_sol_in_frontier = is_solution_in_frontier(frontier, self.goal)
+            if is_sol_in_frontier[0]:
+                node = is_sol_in_frontier[1]
+                previous_nodes = []
+                while node.parent is not None:
+                    previous_nodes.append(node)
+                    node = node.parent
                 previous_nodes.reverse()
                 movies_and_persons = []
                 for node in previous_nodes:
@@ -162,8 +169,8 @@ class DegreesOfSeperation():
 def is_solution_in_frontier(frontier, goal):
     for node in frontier.frontier:
         if node.state == goal:
-            return True
-    return False
+            return True , node
+    return False , None
 
 def person_id_for_name(name):
     """
