@@ -97,10 +97,73 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-
+    deggrees_of_seperation = DegreesOfSeperation(source, target)
+    deggrees_of_seperation.solve()
+    return deggrees_of_seperation.solution
     # TODO
-    raise NotImplementedError
+    #raise NotImplementedError
 
+class DegreesOfSeperation():
+    def __init__(self, sourceid , targetid ):
+        self.source = sourceid
+        self.target = targetid
+        self.start = sourceid
+        self.goal = targetid
+        self.solution = None
+        self.explored = set()
+    def solve(self):
+        
+        # Keep track of number of states explored
+        self.num_explored = 0
+        
+        # Initialize frontier to just the starting position
+        start = Node(state=self.start, parent=None, action=None)
+        frontier = StackFrontier()
+        frontier.add(start)
+        
+        while True:
+            # If nothing left in frontier, then no path
+            if frontier.empty():
+                return None
+
+            # Choose a node from the frontier
+            node = frontier.remove()
+            self.num_explored += 1
+
+            # If node is the goal, then we have a solution
+            if node.state == self.goal:
+                previous_nodes = []
+                #actions = []
+                #cells = []
+                while node.parent is not None:
+                    #actions.append(node.action)
+                    #cells.append(node.state)
+                    previous_nodes.append(node)
+                    node = node.parent
+                #actions.reverse()
+                #cells.reverse()
+                previous_nodes.reverse()
+                movies_and_persons = []
+                for node in previous_nodes:
+                    movies_and_persons.append((node.action, node.state))
+                self.solution = movies_and_persons
+                return
+
+            # Mark node as explored
+            self.explored.add(node.state)
+
+            # Add neighbors to frontier
+            for action, state in self.neighbors(node.state):
+                if not frontier.contains_state(state) and state not in self.explored:
+                    child = Node(state=state, parent=node, action=action)
+                    frontier.add(child)
+    def neighbors(self,state):
+        return neighbors_for_person(state)
+def is_solution_in_frontier(frontier, goal):
+    for node in frontier.frontier:
+        if node.state == goal:
+            return True
+    return False
 
 def person_id_for_name(name):
     """
