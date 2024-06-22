@@ -14,7 +14,31 @@ class Sentence():
     def symbols(self):
         """Returns a set of all symbols in the logical sentence."""
         return set()
+    
+    """
+    see : "https://www.analyticsvidhya.com/blog/2024/01/understanding-classmethod-in-python/#:~:text=A%20classmethod()%20is%20a,an%20instance%20of%20the%20class."
+    #What is the class method used for?
+    # It is used to define a method that is bound to the class and not the object of the class.
+    # To use a classmethod(), we can directly call it from the class, without the need for creating an instance of the class. For example:
+    #class MyClass:
+    #@classmethod
+    #def my_method(cls, arg1, arg2, ...):
+    # MyClass.my_method(arg1, arg2, ...)
+    #Differences between classmethod() and staticmethod()
+    
+    Although both classmethod() and staticmethod() are used to define methods
+    that are bound to the class rather than an instance, there are some key
+    differences between them.
 
+    The main difference lies in the way they handle the first parameter.
+    In classmethod(), the first parameter is automatically passed and refers to the
+    class itself (usually named `cls`), whereas in staticmethod(), no parameters 
+    are automatically passed.
+    Another difference is that classmethod() can access and modify class attributes,
+    whereas staticmethod() cannot. This makes classmethod() more suitable for scenarios 
+    where we need to work with class-level data.
+    """
+    
     @classmethod
     def validate(cls, sentence):
         if not isinstance(sentence, Sentence):
