@@ -1,3 +1,6 @@
 .DS_Store
 .__pycache__
 lecture1/lectures code/__pycache__/logic.cpython-39.pyc
+*/.DS_Store
+*.DS_Store
+
