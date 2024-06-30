@@ -206,19 +206,42 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
-        self.knowledge.append(Sentence(self.get_neighbors(cell), count))
+        # add a new sentence to the AI's knowledge base based on the value of cell and count
+        cells = set()
+        neighbors = self.get_neighbors(cell)
+        count_copy = copy.deepcopy(count)
+        for cl in neighbors:
+            if cl in self.mines:
+                count_copy -= 1
+            elif cl in self.safes:
+                continue
+            else:
+                cells.add(cl)
+        new_ai_sentence = Sentence(cells, count_copy)
+        if (len(new_ai_sentence.cells) > 0):
+            self.knowledge.append(new_ai_sentence)
+        
+        # mark any additional cells as safe or as mines if it can be concluded based on the AI's knowledge base
+        self.check_knowledge()
+        
+        
+        self.update_knowledge()
+        return
+        
+    def check_knowledge(self):
         for sentence in self.knowledge:
+            if len(sentence.cells) == 0:
+                self.knowledge.remove(sentence)
             known_mines_place = copy.deepcopy(sentence.known_mines())
             known_safes_place = copy.deepcopy(sentence.known_safes())
             if known_mines_place:
                 for mine in known_mines_place:
                     self.mark_mine(mine)
+                    self.check_knowledge()
             if known_safes_place:
                 for safe in known_safes_place:
                     self.mark_safe(safe)
-        self.update_knowledge()
-        return
-        raise NotImplementedError
+                    self.check_knowledge()
     def update_knowledge(self):
         """
         Update the AI's knowledge base based on the new information given.
