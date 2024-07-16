@@ -135,21 +135,45 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
-        raise NotImplementedError
+        if arcs == None:
+            arcs = [(x,y) for x in self.domains for y in self.crossword.neighbors(x)]
+        else:
+            arcs = arcs.copy()
+        while arcs:
+            x,y = arcs.pop()
+            if self.revise(x,y):
+                if len(self.domains[x]) == 0:
+                    return False
+                for z in self.crossword.neighbors(x) - {y}:
+                    arcs.append((z,x))
+        return True
 
     def assignment_complete(self, assignment):
         """
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        raise NotImplementedError
+        
+        for var in self.crossword.variables:
+            if var not in assignment or assignment[var] not in self.domains[var]:
+                return False
+        return True
 
     def consistent(self, assignment):
         """
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+        for x in assignment:
+            if x.length != len(assignment[x]):
+                return False
+            for y in assignment:
+                if x != y:
+                    if self.crossword.overlaps[x,y] is not None:
+                        i,j = self.crossword.overlaps[x,y]
+                        if assignment[x][i] != assignment[y][j]:
+                            return False
+        return True
 
     def order_domain_values(self, var, assignment):
         """
