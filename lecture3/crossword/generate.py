@@ -182,7 +182,21 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
-        raise NotImplementedError
+        def count_ruled_out_values(value):
+            count = 0
+            for neighbor in self.crossword.neighbors(var):
+                if neighbor in assignment:
+                    continue
+                overlap = self.crossword.overlaps[var, neighbor]
+                if overlap:
+                    i, j = overlap
+                    for neighbor_value in self.domains[neighbor]:
+                        if value[i] != neighbor_value[j]:
+                            count += 1
+            return count
+
+        return sorted(self.domains[var], key=count_ruled_out_values)
+        
 
     def select_unassigned_variable(self, assignment):
         """
@@ -192,7 +206,10 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
-        raise NotImplementedError
+            
+        unassigned_variables = [var for var in self.crossword.variables if var not in assignment]
+        return min(unassigned_variables,
+                   key=lambda var: (len(self.domains[var]), -len(self.crossword.neighbors(var))))
 
     def backtrack(self, assignment):
         """
@@ -203,7 +220,17 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        raise NotImplementedError
+        if self.assignment_complete(assignment):
+            return assignment
+        var = self.select_unassigned_variable(assignment)
+        for value in self.order_domain_values(var, assignment):
+            assignment[var] = value
+            if self.consistent(assignment):
+                result = self.backtrack(assignment)
+                if result is not None:
+                    return result
+            del assignment[var]
+        return None
 
 
 def main():
